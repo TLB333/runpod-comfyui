@@ -10,22 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 512
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/lib/jvm
+          sudo rm -rf /usr/lib/mono
+          sudo rm -rf /usr/share/postgresql*
+          sudo rm -rf /usr/lib/firefox
+          sudo rm -rf /opt/microsoft
+          sudo docker image prune -af
+          df -h
 
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+            network=host
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -39,6 +49,7 @@ jobs:
           mkdir -p loras ultralytics/bbox
           gdown --folder https://drive.google.com/drive/folders/1i1IsypoCBJLg4P0c3KAEwDeRzpeLEKyc -O loras/
           gdown --folder https://drive.google.com/drive/folders/1-oM8QQtnKm1rEa58q4N_C2Soa2lYZCoX -O ultralytics/bbox/
+          df -h
 
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -49,5 +60,4 @@ jobs:
           tags: tlb333/comfyui-runpod:latest
           secrets: |
             hf_token=${{ secrets.HF_TOKEN }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true
