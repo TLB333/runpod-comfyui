@@ -156,3 +156,4 @@ Your image URL: `yourdockerhubname/comfyui-runpod:latest`
 | Out of VRAM | Add `--lowvram` to the ComfyUI launch command in `start.sh` |
 | Build fails on Mac | Make sure Docker Desktop is running; use `--platform linux/amd64` on Apple Silicon |
 | Workflows not showing | Check they're in `workflows/` folder before building |
+# build
