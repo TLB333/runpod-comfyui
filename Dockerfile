@@ -4,7 +4,7 @@
 #             Img2Img Upscaler FLUX, TEXTGen
 #  Base: RunPod PyTorch 2.1 · CUDA 12.1 · Ubuntu 22.04
 # ─────────────────────────────────────────────────────────────
-FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
+FROM runpod/pytorch:2.2.0-py3.10-cuda12.1.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir --upgrade pip
 # Step 2: PyTorch stack (must use its own index-url alone)
 RUN pip install --no-cache-dir \
         torch torchvision torchaudio \
-        --index-url https://download.pytorch.org/whl/cu124
+        --index-url https://download.pytorch.org/whl/cu121
 
 # Step 3: everything else from PyPI
 RUN pip install --no-cache-dir \
