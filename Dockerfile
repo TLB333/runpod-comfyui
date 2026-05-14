@@ -45,7 +45,8 @@ RUN pip install --no-cache-dir \
 
 # ── Clone ComfyUI ─────────────────────────────────────────────
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && \
-    pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt
+    pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt && \
+    pip install --no-cache-dir comfy-aimdo==0.3.0
 
 # ── ComfyUI Manager ───────────────────────────────────────────
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git \
@@ -85,10 +86,7 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack.git \
         scikit-image \
         watchdog 2>/dev/null || true
 
-# Clownsampler — ClownsharKSampler_Beta, SharkChainsampler_Beta, BetaSamplingScheduler
-RUN git clone https://github.com/Clownfish-s-swimming-pool/ComfyUI-clownsampler.git \
-    /workspace/ComfyUI/custom_nodes/ComfyUI-clownsampler && \
-    pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-clownsampler/requirements.txt 2>/dev/null || true
+# Clownsampler nodes are part of RES4LYF (ClownsharkBatwing) installed below
 
 # ReferenceLatent — ReferenceLatent node
 RUN git clone https://github.com/antpixel/ComfyUI-ReferenceLatent.git \
@@ -125,6 +123,25 @@ RUN git clone https://github.com/cubiq/ComfyUI_essentials.git \
 RUN git clone https://github.com/WASasquatch/was-node-suite-comfyui.git \
     /workspace/ComfyUI/custom_nodes/was-node-suite-comfyui && \
     pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/was-node-suite-comfyui/requirements.txt 2>/dev/null || true
+
+# ComfyUI-Impact-Subpack — UltralyticsDetectorProvider (separate from Impact Pack)
+RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git \
+    /workspace/ComfyUI/custom_nodes/ComfyUI-Impact-Subpack && \
+    cd /workspace/ComfyUI/custom_nodes/ComfyUI-Impact-Subpack && \
+    python install.py 2>/dev/null || true && \
+    pip install --no-cache-dir -r requirements.txt 2>/dev/null || true
+
+# RES4LYF — ClownsharKSampler_Beta, SharkChainsampler_Beta, BetaSamplingScheduler
+RUN git clone https://github.com/ClownsharkBatwing/RES4LYF.git \
+    /workspace/ComfyUI/custom_nodes/RES4LYF && \
+    pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/RES4LYF/requirements.txt 2>/dev/null || true
+
+# comfyui-vrgamedevgirl — FastFilmGrain, ColorTransfer and UUID subgraph nodes
+RUN git clone https://github.com/vrgamegirl19/comfyui-vrgamedevgirl.git \
+    /workspace/ComfyUI/custom_nodes/comfyui-vrgamedevgirl && \
+    pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/comfyui-vrgamedevgirl/requirements.txt 2>/dev/null || true
+
+# comfyui-aspect-ratio-crop-node is part of vrgamegirl19/comfyui-vrgamedevgirl above
 
 # ── Model directories ─────────────────────────────────────────
 RUN mkdir -p \

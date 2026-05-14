@@ -777,7 +777,7 @@
         }
       },
       "widgets_values": [
-        "Lora_lora_000000600.safetensors",
+        "loras/Lora_lora_000000600.safetensors",
         1
       ]
     },
