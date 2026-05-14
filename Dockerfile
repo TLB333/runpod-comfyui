@@ -102,9 +102,9 @@ RUN git clone https://github.com/city96/ComfyUI-GGUF.git \
     pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-GGUF/requirements.txt 2>/dev/null || true
 
 # SeedVR2 — SeedVR2LoadDiTModel, SeedVR2LoadVAEModel, SeedVR2VideoUpscaler
-RUN git clone https://github.com/Seed-X/ComfyUI-SeedVR2.git \
-    /workspace/ComfyUI/custom_nodes/ComfyUI-SeedVR2 && \
-    pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-SeedVR2/requirements.txt 2>/dev/null || true
+RUN git clone https://github.com/ainvfx/ComfyUI-SeedVR2_VideoUpscaler.git \
+    /workspace/ComfyUI/custom_nodes/ComfyUI-SeedVR2_VideoUpscaler && \
+    pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI-SeedVR2_VideoUpscaler/requirements.txt 2>/dev/null || true
 
 # Color Transfer — ColorTransfer node
 RUN git clone https://github.com/yuvraj108c/ComfyUI-Color-Transfer.git \
@@ -175,10 +175,13 @@ RUN --mount=type=secret,id=hf_token \
 # Impact Pack models — FaceDetailer, SAM (no token needed)
 RUN wget -q --show-progress     -O /workspace/ComfyUI/models/ultralytics/bbox/face_yolov8m.pt     "https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8m.pt" &&     wget -q --show-progress     -O /workspace/ComfyUI/models/sams/sam_vit_b_01ec64.pth     "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
 
-# SeedVR2 models — (TEXTGen)
-RUN --mount=type=secret,id=hf_token \
-    HF_TOKEN=$(cat /run/secrets/hf_token) && wget -q --show-progress \
-    --header="Authorization: Bearer $HF_TOKEN"     -O /workspace/ComfyUI/models/seedvr2/seedvr2_ema_7b_fp16.safetensors     "https://huggingface.co/ByteDance/SeedVR2/resolve/main/seedvr2_ema_7b_fp16.safetensors" &&     wget -q --show-progress     --header="Authorization: Bearer ${HF_TOKEN}"     -O /workspace/ComfyUI/models/seedvr2/ema_vae_fp16.safetensors     "https://huggingface.co/ByteDance/SeedVR2/resolve/main/ema_vae_fp16.safetensors"
+# SeedVR2 models — (TEXTGen) — from numz/SeedVR2_comfyUI (no token needed)
+RUN wget -q --show-progress \
+    -O /workspace/ComfyUI/models/seedvr2/seedvr2_ema_7b_fp16.safetensors \
+    "https://huggingface.co/numz/SeedVR2_comfyUI/resolve/main/seedvr2_ema_7b_fp16.safetensors" && \
+    wget -q --show-progress \
+    -O /workspace/ComfyUI/models/seedvr2/ema_vae_fp16.safetensors \
+    "https://huggingface.co/numz/SeedVR2_comfyUI/resolve/main/ema_vae_fp16.safetensors"
 
 # ── Bake in workflows ─────────────────────────────────────────
 RUN mkdir -p /workspace/ComfyUI/user/default/workflows
