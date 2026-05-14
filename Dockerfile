@@ -142,46 +142,7 @@ RUN mkdir -p \
     /workspace/ComfyUI/output \
     /workspace/ComfyUI/input
 
-# ── Download all models at build time ────────────────────────
-# Everything baked in — no downloads needed at runtime
-# HF_TOKEN passed as build arg for gated models (not stored in final image)
-# HF token passed via --secret at build time
-
-# FLUX.2 Klein 9B — main model (Carousel, BG Change, Img2Img) — gated
-RUN --mount=type=secret,id=hf_token \
-    HF_TOKEN=$(cat /run/secrets/hf_token) && wget -q --show-progress \
-    --header="Authorization: Bearer $HF_TOKEN"     -O /workspace/ComfyUI/models/diffusion_models/flux-2-klein-9b.safetensors     "https://huggingface.co/black-forest-labs/FLUX.2-klein-9b/resolve/main/flux-2-klein-9b.safetensors"
-
-# FLUX.2 Klein 9B KV FP8 — (BG Change) — gated
-RUN --mount=type=secret,id=hf_token \
-    HF_TOKEN=$(cat /run/secrets/hf_token) && wget -q --show-progress \
-    --header="Authorization: Bearer $HF_TOKEN"     -O /workspace/ComfyUI/models/diffusion_models/flux-2-klein-9b-kv-fp8.safetensors     "https://huggingface.co/black-forest-labs/FLUX.2-klein-9b-kv-fp8/resolve/main/flux-2-klein-9b-kv-fp8.safetensors"
-
-# Z-Image Turbo — (Img2Img, TEXTGen)
-RUN --mount=type=secret,id=hf_token \
-    HF_TOKEN=$(cat /run/secrets/hf_token) && wget -q --show-progress \
-    --header="Authorization: Bearer $HF_TOKEN"     -O /workspace/ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors     "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/diffusion_models/z_image_turbo_bf16.safetensors"
-
-# Text encoders
-RUN --mount=type=secret,id=hf_token \
-    HF_TOKEN=$(cat /run/secrets/hf_token) && wget -q --show-progress \
-    --header="Authorization: Bearer $HF_TOKEN"     -O /workspace/ComfyUI/models/text_encoders/qwen_3_8b_fp8mixed.safetensors     "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors" &&     wget -q --show-progress     --header="Authorization: Bearer ${HF_TOKEN}"     -O /workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors     "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors"
-
-# VAE
-RUN --mount=type=secret,id=hf_token \
-    HF_TOKEN=$(cat /run/secrets/hf_token) && wget -q --show-progress \
-    --header="Authorization: Bearer $HF_TOKEN"     -O /workspace/ComfyUI/models/vae/flux2-vae.safetensors     "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors" &&     wget -q --show-progress     --header="Authorization: Bearer ${HF_TOKEN}"     -O /workspace/ComfyUI/models/vae/ae.safetensors     "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors"
-
-# Impact Pack models — FaceDetailer, SAM (no token needed)
-RUN wget -q --show-progress     -O /workspace/ComfyUI/models/ultralytics/bbox/face_yolov8m.pt     "https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8m.pt" &&     wget -q --show-progress     -O /workspace/ComfyUI/models/sams/sam_vit_b_01ec64.pth     "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
-
-# SeedVR2 models — (TEXTGen) — from numz/SeedVR2_comfyUI (no token needed)
-RUN wget -q --show-progress \
-    -O /workspace/ComfyUI/models/seedvr2/seedvr2_ema_7b_fp16.safetensors \
-    "https://huggingface.co/numz/SeedVR2_comfyUI/resolve/main/seedvr2_ema_7b_fp16.safetensors" && \
-    wget -q --show-progress \
-    -O /workspace/ComfyUI/models/seedvr2/ema_vae_fp16.safetensors \
-    "https://huggingface.co/numz/SeedVR2_comfyUI/resolve/main/ema_vae_fp16.safetensors"
+# Models downloaded at pod startup via start.sh
 
 # ── Bake in workflows ─────────────────────────────────────────
 RUN mkdir -p /workspace/ComfyUI/user/default/workflows
