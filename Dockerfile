@@ -189,4 +189,8 @@ COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
 EXPOSE 8188 8888
-CMD ["/start.sh"]
+
+# Create empty download_models.sh to satisfy RunPod base image startup
+RUN touch /download_models.sh && chmod +x /download_models.sh
+
+ENTRYPOINT ["/start.sh"]
