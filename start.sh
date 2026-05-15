@@ -6,6 +6,10 @@ echo "  RunPod | ComfyUI + JupyterLab"
 echo "  Workflows: Carousel, BG Change, Img2Img, Text"
 echo "════════════════════════════════════════════════"
 
+# Fix comfy_aimdo ModelMMAP bug — pin to working version
+echo "Fixing comfy_aimdo..."
+pip install -q comfy-aimdo==0.3.0 --break-system-packages 2>/dev/null || true
+
 COMFY="/workspace/ComfyUI/models"
 HF_TOKEN="${HF_TOKEN:-}"
 
@@ -105,4 +109,5 @@ cd /workspace/ComfyUI && python main.py \
     --listen 0.0.0.0 \
     --port ${COMFYUI_PORT:-8188} \
     --enable-cors-header \
-    --preview-method auto
+    --preview-method auto \
+    --disable-mmap
