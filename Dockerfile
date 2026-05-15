@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
         gdown
 
 # ── ComfyUI ────────────────────────────────────────────────────
-ARG CACHEBUST=1
+ARG CACHEBUST=3
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && \
     pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt
 
