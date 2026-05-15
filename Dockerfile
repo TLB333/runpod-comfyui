@@ -105,9 +105,10 @@ RUN mkdir -p \
     /workspace/ComfyUI/user/default/workflows
 
 # ── Copy files ─────────────────────────────────────────────────
-COPY workflows/ /workspace/ComfyUI/user/default/workflows/
-COPY loras/ /workspace/ComfyUI/models/loras/
-COPY ultralytics/ /workspace/ComfyUI/models/ultralytics/
+# Copy to /data so they survive the /workspace volume mount
+COPY workflows/ /data/workflows/
+COPY loras/ /data/loras/
+COPY ultralytics/ /data/ultralytics/
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 RUN touch /download_models.sh && chmod +x /download_models.sh
