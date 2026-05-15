@@ -42,23 +42,21 @@ RUN pip install --no-cache-dir \
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && \
     pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt
 
-# Patch comfy/utils.py to catch ModelMMAP errors and fall back to standard loading
-RUN python3 << 'PYEOF'
-import re
+# Patch comfy/utils.py to handle ModelMMAP failures gracefully on Blackwell GPUs
+RUN python3 -c "
+import sys
 with open('/workspace/ComfyUI/comfy/utils.py', 'r') as f:
     code = f.read()
-# Replace the mmap loading block with a try/except fallback
-old = 'model_mmap = comfy_aimdo.model_mmap.ModelMMAP(ckpt)'
-new = '''try:
-                model_mmap = comfy_aimdo.model_mmap.ModelMMAP(ckpt)
-            except Exception:
-                import safetensors.torch as st
-                return st.load_file(ckpt, device='cpu'), {}'''
-code = code.replace(old, new, 1)
-with open('/workspace/ComfyUI/comfy/utils.py', 'w') as f:
-    f.write(code)
-print('Patched successfully')
-PYEOF
+old = '        model_mmap = comfy_aimdo.model_mmap.ModelMMAP(ckpt)'
+new = '        try:\n            model_mmap = comfy_aimdo.model_mmap.ModelMMAP(ckpt)\n        except Exception:\n            import safetensors.torch as st\n            return st.load_file(ckpt, device=\"cpu\"), {}'
+if old in code:
+    code = code.replace(old, new, 1)
+    with open('/workspace/ComfyUI/comfy/utils.py', 'w') as f:
+        f.write(code)
+    print('Patched OK')
+else:
+    print('Pattern not found, skipping')
+"
 
 # ── ComfyUI Manager ───────────────────────────────────────────
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git \
