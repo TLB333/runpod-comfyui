@@ -4,7 +4,7 @@
 #             Img2Img Upscaler FLUX, TEXTGen
 #  Base: RunPod PyTorch 2.1 · CUDA 12.1 · Ubuntu 22.04
 # ─────────────────────────────────────────────────────────────
-FROM runpod/pytorch:2.2.0-py3.10-cuda12.1.1-devel-ubuntu22.04
+FROM runpod/pytorch:2.1.0-py3.10-cuda12.0.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -45,8 +45,25 @@ RUN pip install --no-cache-dir \
 
 # ── Clone ComfyUI ─────────────────────────────────────────────
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && \
-    cd /workspace/ComfyUI && git checkout 873de5f && \
     pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt
+
+# Patch comfy/utils.py to catch ModelMMAP errors and fall back to standard loading
+RUN python3 << 'PYEOF'
+import re
+with open('/workspace/ComfyUI/comfy/utils.py', 'r') as f:
+    code = f.read()
+# Replace the mmap loading block with a try/except fallback
+old = 'model_mmap = comfy_aimdo.model_mmap.ModelMMAP(ckpt)'
+new = '''try:
+                model_mmap = comfy_aimdo.model_mmap.ModelMMAP(ckpt)
+            except Exception:
+                import safetensors.torch as st
+                return st.load_file(ckpt, device='cpu'), {}'''
+code = code.replace(old, new, 1)
+with open('/workspace/ComfyUI/comfy/utils.py', 'w') as f:
+    f.write(code)
+print('Patched successfully')
+PYEOF
 
 # ── ComfyUI Manager ───────────────────────────────────────────
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git \
