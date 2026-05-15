@@ -4,7 +4,7 @@
 #             Img2Img Upscaler FLUX, TEXTGen
 #  Base: RunPod PyTorch 2.1 · CUDA 12.1 · Ubuntu 22.04
 # ─────────────────────────────────────────────────────────────
-FROM runpod/pytorch:1.0.3-cu1300-torch291-ubuntu2404
+FROM runpod/pytorch:2.2.0-py3.10-cuda12.1.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -25,14 +25,16 @@ RUN apt-get update && apt-get install -y \
 # Step 1: upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Step 2: everything else from PyPI (PyTorch already in base image)
+# Step 2: Python packages
 RUN pip install --no-cache-dir \
         jupyterlab ipywidgets \
+        xformers \
         transformers accelerate diffusers \
         safetensors einops omegaconf tqdm \
         Pillow opencv-python-headless scipy numpy \
-        onnxruntime \
+        onnxruntime-gpu \
         ultralytics \
+        segment-anything \
         imageio imageio-ffmpeg \
         colour-science
 
