@@ -45,8 +45,8 @@ RUN pip install --no-cache-dir \
 
 # ── Clone ComfyUI ─────────────────────────────────────────────
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && \
-    pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt && \
-    pip install --no-cache-dir comfy-aimdo==0.3.0
+    cd /workspace/ComfyUI && git checkout 873de5f && \
+    pip install --no-cache-dir -r /workspace/ComfyUI/requirements.txt
 
 # ── ComfyUI Manager ───────────────────────────────────────────
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git \

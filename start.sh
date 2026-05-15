@@ -6,9 +6,7 @@ echo "  RunPod | ComfyUI + JupyterLab"
 echo "  Workflows: Carousel, BG Change, Img2Img, Text"
 echo "════════════════════════════════════════════════"
 
-# Fix comfy_aimdo ModelMMAP bug — pin to working version
-echo "Fixing comfy_aimdo..."
-pip install -q comfy-aimdo==0.3.0 --break-system-packages 2>/dev/null || true
+# ComfyUI pinned to pre-comfy_aimdo commit — no mmap issues
 
 COMFY="/workspace/ComfyUI/models"
 HF_TOKEN="${HF_TOKEN:-}"
