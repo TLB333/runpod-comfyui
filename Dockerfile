@@ -25,21 +25,14 @@ RUN apt-get update && apt-get install -y \
 # Step 1: upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Step 2: PyTorch stack (must use its own index-url alone)
-RUN pip install --no-cache-dir \
-        torch torchvision torchaudio \
-        --index-url https://download.pytorch.org/whl/cu121
-
-# Step 3: everything else from PyPI
+# Step 2: everything else from PyPI (PyTorch already in base image)
 RUN pip install --no-cache-dir \
         jupyterlab ipywidgets \
-        xformers \
         transformers accelerate diffusers \
         safetensors einops omegaconf tqdm \
-        Pillow opencv-python scipy numpy \
-        onnxruntime-gpu \
+        Pillow opencv-python-headless scipy numpy \
+        onnxruntime \
         ultralytics \
-        segment-anything \
         imageio imageio-ffmpeg \
         colour-science
 
