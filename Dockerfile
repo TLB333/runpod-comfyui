@@ -76,11 +76,10 @@ RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git \
     pip install --no-cache-dir -r /workspace/ComfyUI/custom_nodes/ComfyUI_Comfyroll_CustomNodes/requirements.txt 2>/dev/null || true
 
 # Impact Pack — FaceDetailer, SAMLoader, UltralyticsDetectorProvider
-# Skip SAM2 compile — Impact Pack installs it at first run via ComfyUI Manager
 RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack.git \
     /workspace/ComfyUI/custom_nodes/ComfyUI-Impact-Pack && \
-    cd /workspace/ComfyUI/custom_nodes/ComfyUI-Impact-Pack && \
     pip install --no-cache-dir \
+        piexif \
         opencv-python-headless \
         pycocotools \
         scikit-image \
